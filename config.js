@@ -16,7 +16,7 @@ const CONFIG = {
   },
 
   // Fecha y hora del evento (formato ISO: YYYY-MM-DDTHH:MM:SS)
-  FECHA_EVENTO: "2026-02-28T20:00:00",
+  FECHA_EVENTO: "2026-05-28T20:00:00",
 
   // Hora desde la que se activa el check-in el día del evento (HH:MM)
   HORA_CHECKIN: "17:00",
