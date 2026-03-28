@@ -1,0 +1,2247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invitación — Cargando...</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ── RESET & VARIABLES ─────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg:        #0a0a0a;
+  --surface:   #141414;
+  --border:    #2a2a2a;
+  --accent:    #c9a96e;
+  --accent-lt: #e8d5b0;
+  --text:      #f0ece4;
+  --muted:     #8a8680;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans:  'Montserrat', sans-serif;
+  --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-weight: 300;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── TRAMA ART DÉCO ─────────────────────────────────────── */
+#art-deco-bg {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+  isolation: isolate;
+}
+#art-deco-bg svg { width: 100%; height: 100%; }
+main { position: relative; z-index: 1; }
+#bienvenida { position: relative; z-index: 1; }
+/* screen-login mantiene su position:fixed y z-index:100 propios */
+
+/* ── UTILIDADES ────────────────────────────────────────── */
+.hidden   { display: none !important; }
+.section  { padding: 64px 28px; max-width: 680px; margin: 0 auto; }
+.divider  {
+  width: 1px; height: 48px; background: var(--accent);
+  margin: 8px auto; opacity: 0.3;
+}
+.ornament {
+  display: flex; align-items: center; gap: 16px;
+  color: var(--accent); font-family: var(--font-serif);
+  font-size: 13px; letter-spacing: 0.3em; text-transform: uppercase;
+  margin-bottom: 32px;
+}
+.ornament::before, .ornament::after {
+  content: ''; flex: 1; height: 0.5px; background: var(--accent); opacity: 0.4;
+}
+
+/* ══════════════════════════════════════════════════════════
+   1. LOGIN
+══════════════════════════════════════════════════════════ */
+#screen-login {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  overflow: hidden;
+}
+
+.login-slides { position: absolute; inset: 0; z-index: 1; }
+.login-slide {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  filter: grayscale(100%) brightness(0.28);
+  opacity: 0; transition: opacity 1.4s ease;
+}
+.login-slide.active { opacity: 1; }
+
+.login-overlay {
+  position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(
+    to bottom,
+    rgba(10,10,10,0.55) 0%,
+    rgba(10,10,10,0.25) 35%,
+    rgba(10,10,10,0.75) 100%
+  );
+}
+
+.login-content {
+  position: relative; z-index: 3;
+  text-align: center; width: 100%; max-width: 440px; padding: 0 32px;
+}
+
+.login-marca {
+  font-family: var(--font-serif); font-size: 13px; letter-spacing: 0.55em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 52px;
+  opacity: 0.9;
+}
+
+/* Cuenta regresiva */
+.login-countdown {
+  display: flex; justify-content: center; gap: 14px; margin-bottom: 40px;
+}
+.countdown-unit { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.countdown-num {
+  font-family: var(--font-sans); font-size: 32px; font-weight: 300;
+  color: #f0ece4; line-height: 1; letter-spacing: 0.05em;
+}
+.countdown-label {
+  font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: #8a8680;
+}
+.countdown-sep {
+  font-family: var(--font-serif); font-size: 26px; color: #c9a96e;
+  opacity: 0.5; align-self: flex-start; margin-top: 4px;
+}
+
+.login-subtitle {
+  font-size: 15px; line-height: 1.9; color: rgba(240,236,228,0.85);
+  letter-spacing: 0.04em; margin-bottom: 36px;
+}
+
+/* Input */
+.login-form { display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; }
+
+.code-input-wrap {
+  display: flex; width: 100%; max-width: 340px;
+  border: 1px solid rgba(201,169,110,0.35);
+  background: rgba(255,255,255,0.05);
+  transition: border-color var(--transition);
+  position: relative;
+}
+.code-input-wrap::before, .code-input-wrap::after {
+  content: '';
+  position: absolute; width: 8px; height: 8px;
+  border-color: var(--accent); border-style: solid; opacity: 0.5;
+}
+.code-input-wrap::before { top: -1px; left: -1px; border-width: 1px 0 0 1px; }
+.code-input-wrap::after  { bottom: -1px; right: -1px; border-width: 0 1px 1px 0; }
+.code-input-wrap:focus-within { border-color: var(--accent); }
+.code-input-wrap:focus-within::before,
+.code-input-wrap:focus-within::after { opacity: 1; }
+
+#code-input {
+  flex: 1; padding: 18px 16px;
+  background: transparent; border: none; outline: none;
+  color: var(--text); font-family: var(--font-sans); font-size: 16px;
+  font-weight: 400; letter-spacing: 0.45em; text-transform: uppercase;
+  text-align: center; min-width: 0;
+}
+#code-input::placeholder {
+  color: rgba(138,134,128,0.5); letter-spacing: 0.3em; font-size: 14px;
+  font-family: var(--font-sans);
+}
+
+.btn-primary {
+  background: var(--accent); color: #0a0a0a;
+  border: none; padding: 18px 24px;
+  font-family: var(--font-sans); font-size: 10px; font-weight: 500;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  cursor: pointer; transition: background var(--transition);
+  white-space: nowrap; flex-shrink: 0;
+}
+.btn-primary:hover { background: var(--accent-lt); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.login-error {
+  font-size: 13px; color: #d07070; letter-spacing: 0.04em;
+  text-align: center; min-height: 20px;
+}
+
+.login-error {
+  font-size: 13px; color: #d07070; letter-spacing: 0.04em;
+  text-align: center; min-height: 20px;
+}
+
+.spinner {
+  width: 36px; height: 36px;
+  border: 1px solid rgba(201,169,110,0.2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Bienvenida */
+#bienvenida {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 12px;
+  background: var(--bg); text-align: center; padding: 32px;
+  transition: opacity 0.8s ease;
+}
+#bienvenida .hola-nombre {
+  font-family: var(--font-serif); font-size: 64px; font-weight: 300;
+  font-style: italic; color: var(--text); line-height: 1;
+}
+#bienvenida .hola-pre {
+  font-size: 11px; letter-spacing: 0.45em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 8px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   2. HERO
+══════════════════════════════════════════════════════════ */
+#hero {
+  height: 100vh; position: relative;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-end;
+  padding-bottom: 160px; text-align: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  animation: hero-zoom 18s ease-in-out infinite alternate;
+}
+@keyframes hero-zoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.06); }
+}
+.hero-overlay {
+  position: absolute; inset: -4px;
+  background:
+    linear-gradient(to top,
+      rgba(10,10,10,1.00)  0%,
+      rgba(10,10,10,0.98) 18%,
+      rgba(10,10,10,0.92) 35%,
+      rgba(10,10,10,0.70) 50%,
+      rgba(10,10,10,0.00) 62%
+    ),
+    linear-gradient(to bottom,
+      rgba(10,10,10,0.60)  0%,
+      rgba(10,10,10,0.00) 28%
+    );
+}
+.hero-content {
+  position: relative; z-index: 2;
+  animation: fade-in-up 1.2s ease both;
+  animation-delay: 0.3s;
+}
+@keyframes fade-in-up {
+  from { opacity:0; transform: translateY(20px); }
+  to   { opacity:1; transform: none; }
+}
+.hero-titulo {
+  font-family: var(--font-serif); font-size: clamp(12px, 2.5vw, 15px);
+  letter-spacing: 0.7em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 20px; opacity: 0.9;
+}
+.hero-novios {
+  font-family: var(--font-serif); font-size: clamp(56px, 13vw, 96px);
+  font-weight: 300; line-height: 0.95; color: var(--text);
+  letter-spacing: -0.02em; text-shadow: 0 2px 40px rgba(0,0,0,0.5);
+}
+.hero-novios span { display: block; }
+.hero-novios .amp {
+  font-style: italic; font-size: 0.6em; color: var(--accent);
+  display: inline; letter-spacing: 0;
+}
+.hero-fecha {
+  margin-top: 24px; text-align: center;
+}
+.hero-fecha-dia {
+  display: block; font-size: 11px; letter-spacing: 0.45em;
+  text-transform: uppercase; color: rgba(240,236,228,0.5);
+  margin-bottom: 4px;
+}
+.hero-fecha-num {
+  display: block; font-family: var(--font-serif); font-size: 18px;
+  font-weight: 300; letter-spacing: 0.2em;
+  text-transform: uppercase; color: rgba(240,236,228,0.75);
+}
+.hero-scroll {
+  position: absolute; bottom: 36px; right: 40px; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--muted); writing-mode: vertical-rl;
+  animation: float 3s ease-in-out infinite;
+}
+.hero-scroll::after {
+  content: ''; width: 0.5px; height: 40px; background: var(--accent); opacity: 0.4;
+}
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+
+/* ══════════════════════════════════════════════════════════
+   3. EVENTO
+══════════════════════════════════════════════════════════ */
+.evento-bloque { margin-bottom: 48px; }
+.evento-tag {
+  font-size: 10px; letter-spacing: 0.45em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 10px;
+}
+.evento-nombre {
+  font-family: var(--font-serif); font-size: 30px; font-weight: 300;
+  color: var(--text); margin-bottom: 8px;
+}
+.evento-dir {
+  font-size: 14px; color: var(--muted); margin-bottom: 4px; letter-spacing: 0.03em;
+}
+.evento-hora {
+  font-size: 13px; color: var(--accent); letter-spacing: 0.2em; margin-bottom: 24px;
+  font-family: var(--font-serif);
+}
+
+/* Mapa art déco */
+.mapa-container {
+  position: relative; margin-top: 20px;
+  border: 1px solid rgba(201,169,110,0.2);
+  background: var(--surface);
+}
+/* Línea superior decorativa */
+.mapa-container::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,169,110,0.5), transparent);
+  z-index: 1;
+}
+.mapa-esquinas::before, .mapa-esquinas::after,
+.mapa-esquinas span::before, .mapa-esquinas span::after {
+  content: ''; position: absolute;
+  width: 16px; height: 16px;
+  border-color: var(--accent); border-style: solid; opacity: 0.7; z-index: 3;
+}
+.mapa-esquinas::before { top: 6px;    left: 6px;   border-width: 1px 0 0 1px; }
+.mapa-esquinas::after  { bottom: 6px; right: 6px;  border-width: 0 1px 1px 0; }
+.mapa-esquinas span::before { top: 6px;    right: 6px;  border-width: 1px 1px 0 0; }
+.mapa-esquinas span::after  { bottom: 6px; left: 6px;   border-width: 0 0 1px 1px; }
+.mapa-esquinas {
+  position: absolute; inset: 0; pointer-events: none; z-index: 3;
+}
+.mapa-esquinas span { position: absolute; inset: 0; }
+
+.mapa-wrap {
+  width: 100%; height: 220px; overflow: hidden; display: block;
+}
+.mapa-wrap iframe {
+  width: 100%; height: 100%; border: none; display: block;
+  filter: grayscale(1) brightness(0.5) sepia(0.3) contrast(1.1);
+  transform: scale(1.02); /* elimina bordes blancos */
+}
+
+.mapa-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-top: 1px solid rgba(201,169,110,0.1);
+}
+.mapa-label {
+  font-size: 11px; letter-spacing: 0.15em;
+  color: var(--muted); flex: 1; padding-right: 12px;
+}
+.mapa-ver {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--accent); text-decoration: none;
+  border: 0.5px solid rgba(201,169,110,0.3);
+  padding: 8px 14px; white-space: nowrap;
+  transition: all 0.3s; flex-shrink: 0;
+}
+.mapa-ver:hover { background: rgba(201,169,110,0.08); border-color: var(--accent); }
+
+/* Aviso QR */
+.evento-aviso {
+  margin-top: 48px; padding: 28px 32px;
+  border: 1px solid rgba(201,169,110,0.2);
+  border-left: 2px solid var(--accent);
+  background: rgba(201,169,110,0.04);
+  position: relative;
+}
+.evento-aviso::before {
+  content: '↩';
+  position: absolute; top: 20px; right: 24px;
+  font-size: 20px; color: var(--accent); opacity: 0.4;
+}
+.evento-aviso p {
+  font-size: 14px; line-height: 2; color: rgba(240,236,228,0.8);
+}
+.evento-aviso p + p { margin-top: 10px; }
+.evento-aviso strong { color: var(--accent); font-weight: 400; }
+
+/* ── Sección genérica ──────────────────────────────────── */
+.section-title {
+  font-family: var(--font-serif); font-size: 38px; font-weight: 300;
+  font-style: italic; color: var(--text); margin-bottom: 8px;
+}
+.section-sub {
+  font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 40px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   4. DRESS CODE
+══════════════════════════════════════════════════════════ */
+.dresscode-card {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0; border: 1px solid rgba(201,169,110,0.15);
+  overflow: hidden; margin-top: 8px;
+}
+.dresscode-main {
+  padding: 32px 28px;
+  border-right: 1px solid rgba(201,169,110,0.15);
+}
+.dresscode-tipo {
+  font-family: var(--font-serif); font-size: 44px; font-weight: 300;
+  color: var(--accent); line-height: 1; margin-bottom: 16px;
+}
+.dresscode-desc {
+  font-size: 14px; line-height: 1.9; color: rgba(240,236,228,0.7);
+}
+.dresscode-aside {
+  padding: 32px 24px;
+  background: rgba(201,169,110,0.03);
+  display: flex; flex-direction: column; justify-content: center; gap: 12px;
+}
+.dresscode-aside-label {
+  font-size: 9px; letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--muted);
+}
+.dresscode-evitar {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13px; color: rgba(240,236,228,0.65); line-height: 1.6;
+}
+.dresscode-evitar-x {
+  color: #c06060; font-size: 18px; line-height: 1; flex-shrink: 0; margin-top: 1px;
+}
+@media (max-width: 480px) {
+  .dresscode-card { grid-template-columns: 1fr; }
+  .dresscode-main { border-right: none; border-bottom: 1px solid rgba(201,169,110,0.15); }
+}
+
+/* ══════════════════════════════════════════════════════════
+   5. REGALOS
+══════════════════════════════════════════════════════════ */
+.regalo-card {
+  border: 1px solid rgba(201,169,110,0.15); padding: 32px;
+  background: var(--surface); margin-bottom: 20px;
+  position: relative; overflow: hidden;
+}
+.regalo-card::after {
+  content: '♡';
+  position: absolute; bottom: 16px; right: 24px;
+  font-size: 48px; color: rgba(201,169,110,0.06);
+  font-family: var(--font-serif); line-height: 1;
+}
+.regalo-bank { display: none; }
+.regalo-banco-moneda {
+  font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 16px; opacity: 0.8;
+}
+.regalo-moneda-bloque { display: block; }
+.regalo-dato-label {
+  font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--accent); opacity: 0.8; margin-bottom: 6px;
+}
+.regalo-dato-valor {
+  font-family: var(--font-serif); font-size: 22px; font-weight: 300;
+  color: var(--text); letter-spacing: 0.05em; margin-bottom: 16px;
+  word-break: break-all;
+}
+.btn-copy {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; border: 0.5px solid var(--border);
+  color: var(--muted); font-family: var(--font-sans);
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  padding: 10px 18px; cursor: pointer;
+  transition: all var(--transition); margin-bottom: 24px;
+}
+.btn-copy:hover { border-color: var(--accent); color: var(--accent); }
+.btn-copy.copied { border-color: #5a9a5a; color: #5a9a5a; }
+.regalo-nota {
+  font-size: 13px; color: var(--muted); line-height: 1.8; font-style: italic;
+}
+.regalo-moneda-titulo {
+  font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--accent); opacity: 0.6; margin: 20px 0 12px; padding-top: 20px;
+  border-top: 0.5px solid var(--border);
+}
+.regalo-moneda-titulo:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
+.regalo-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin-bottom: 16px;
+}
+.regalo-row-info { flex: 1; min-width: 0; }
+.regalo-dato-valor { word-break: break-all; }
+.btn-icon-copy {
+  flex-shrink: 0; width: 36px; height: 36px;
+  background: transparent; border: 0.5px solid var(--border);
+  color: var(--muted); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--transition);
+}
+.btn-icon-copy:hover { border-color: var(--accent); color: var(--accent); }
+.btn-icon-copy.copied { border-color: #5a9a5a; color: #5a9a5a; }
+.regalo-sobre {
+  border-top: 0.5px solid var(--border); padding-top: 20px; margin-top: 8px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   6. CONFIRMACIÓN
+══════════════════════════════════════════════════════════ */
+.confirm-nombre {
+  font-family: var(--font-serif); font-size: 46px; font-weight: 300;
+  font-style: italic; color: var(--text); margin-bottom: 8px;
+}
+.confirm-sub {
+  font-size: 14px; color: var(--muted); margin-bottom: 12px; line-height: 1.8;
+}
+.confirm-cupos {
+  font-size: 13px; color: var(--accent); opacity: 0.85;
+  letter-spacing: 0.04em; line-height: 1.7; margin-bottom: 32px;
+  padding: 10px 16px; border-left: 2px solid rgba(201,169,110,0.3);
+  font-style: italic;
+}
+.btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 40px; }
+.btn-confirm {
+  padding: 20px 12px; border: 1px solid var(--border);
+  background: transparent; color: rgba(240,236,228,0.6);
+  font-family: var(--font-sans); font-size: 12px; font-weight: 400;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  cursor: pointer; transition: all var(--transition);
+}
+.btn-confirm:hover { border-color: var(--accent); color: var(--accent); }
+.btn-confirm.selected-yes { background: var(--accent); border-color: var(--accent); color: #0a0a0a; }
+.btn-confirm.selected-no  { border-color: #c06060; color: #c06060; }
+
+.form-guest { margin-top: 24px; }
+.form-guest + .form-guest {
+  margin-top: 40px; padding-top: 40px; border-top: 0.5px solid var(--border);
+}
+.guest-label {
+  font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 20px;
+}
+.form-field { margin-bottom: 20px; }
+.form-field label {
+  display: block; font-size: 11px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: rgba(240,236,228,0.55); margin-bottom: 8px;
+}
+.form-field input, .form-field select, .form-field textarea {
+  width: 100%; padding: 15px 16px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--font-sans); font-size: 15px;
+  font-weight: 300; outline: none;
+  transition: border-color var(--transition);
+  -webkit-appearance: none; appearance: none;
+}
+.form-field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a8680' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 16px center;
+  padding-right: 40px;
+}
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+  border-color: var(--accent);
+}
+.form-field input::placeholder, .form-field textarea::placeholder {
+  color: var(--muted); font-size: 14px;
+}
+.form-field textarea { resize: none; height: 110px; line-height: 1.8; }
+
+.acompanante-btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 24px; }
+.acomp-btn {
+  padding: 15px; border: 1px solid var(--border);
+  background: transparent; color: var(--muted);
+  font-family: var(--font-sans); font-size: 12px; font-weight: 400;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  cursor: pointer; transition: all var(--transition);
+}
+.acomp-btn:hover { border-color: var(--accent); color: var(--accent); }
+.acomp-btn.selected-yes { background: var(--accent); border-color: var(--accent); color: #0a0a0a; }
+.acomp-btn.selected-no  { border-color: #c06060; color: #c06060; }
+
+.btn-submit {
+  width: 100%; margin-top: 40px; padding: 20px;
+  background: var(--accent); border: none; color: #0a0a0a;
+  font-family: var(--font-sans); font-size: 12px; font-weight: 500;
+  letter-spacing: 0.35em; text-transform: uppercase;
+  cursor: pointer; transition: background var(--transition);
+}
+.btn-submit:hover { background: var(--accent-lt); }
+.btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.form-success {
+  padding: 32px; border: 0.5px solid var(--border);
+  border-left: 2px solid var(--accent);
+  background: rgba(201,169,110,0.04); text-align: center;
+}
+.form-success .check { font-size: 28px; color: var(--accent); margin-bottom: 16px; }
+.form-success p { font-size: 14px; line-height: 1.8; color: var(--muted); }
+
+/* ══════════════════════════════════════════════════════════
+   7. MENSAJE NOVIOS
+══════════════════════════════════════════════════════════ */
+.mensaje-hint {
+  font-size: 14px; color: var(--muted); line-height: 1.9;
+  margin-bottom: 24px; font-style: italic;
+}
+.mensaje-aviso {
+  font-size: 12px; letter-spacing: 0.05em; color: var(--accent);
+  opacity: 0.7; margin-top: 12px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   8. CHECK-IN
+══════════════════════════════════════════════════════════ */
+#section-checkin { text-align: center; }
+.checkin-bloqueado {
+  padding: 48px 32px; border: 1px solid rgba(201,169,110,0.15);
+  background: var(--surface); position: relative; overflow: hidden;
+}
+.checkin-bloqueado::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.4;
+}
+.lock-icon {
+  width: 44px; height: 44px; margin: 0 auto 20px;
+  border: 1px solid rgba(201,169,110,0.3); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent); font-size: 18px;
+}
+.checkin-bloqueado h3 {
+  font-family: var(--font-serif); font-size: 32px; font-weight: 300;
+  color: var(--text); margin-bottom: 12px;
+}
+.checkin-bloqueado p {
+  font-size: 14px; color: var(--muted); line-height: 1.9; max-width: 320px; margin: 0 auto;
+}
+.checkin-hora {
+  display: inline-block; margin-top: 24px;
+  font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--accent); padding: 12px 24px;
+  border: 1px solid rgba(201,169,110,0.25);
+  background: rgba(201,169,110,0.05);
+}
+.checkin-calendario {
+  margin-top: 32px; padding-top: 28px;
+  border-top: 0.5px solid rgba(201,169,110,0.15);
+}
+.checkin-cal-hint {
+  font-size: 13px; color: var(--muted); line-height: 1.8;
+  margin-bottom: 0; font-style: italic;
+}
+.btn-calendario {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: transparent; border: 1px solid rgba(201,169,110,0.35);
+  color: var(--accent); padding: 14px 24px;
+  font-family: var(--font-sans); font-size: 11px; font-weight: 500;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  cursor: pointer; transition: all var(--transition);
+}
+.btn-calendario:hover {
+  background: rgba(201,169,110,0.08); border-color: var(--accent);
+}
+.btn-calendario.guardado {
+  border-color: #5a9a5a; color: #5a9a5a;
+}
+
+/* QR Modal */
+#qr-modal {
+  position: fixed; inset: 0; z-index: 300;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 32px; padding: 40px;
+}
+#qr-canvas-wrap { background: #fff; padding: 24px; }
+.qr-header {
+  text-align: center; margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 0.5px solid rgba(201,169,110,0.25);
+}
+.qr-evento-titulo {
+  font-size: 10px; letter-spacing: 0.5em; text-transform: uppercase;
+  color: var(--accent); opacity: 0.7; margin-bottom: 8px;
+}
+.qr-evento-novios {
+  font-family: var(--font-serif); font-size: 32px; font-weight: 300;
+  font-style: italic; color: var(--text); line-height: 1; margin-bottom: 12px;
+}
+.qr-evento-fecha-dia {
+  font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase;
+  color: rgba(240,236,228,0.5); margin-bottom: 3px;
+}
+.qr-evento-fecha-num {
+  font-family: var(--font-serif); font-size: 15px; font-weight: 300;
+  letter-spacing: 0.15em; color: rgba(240,236,228,0.7);
+}
+.qr-nombre {
+  font-family: var(--font-serif); font-size: 24px; font-weight: 300;
+  color: var(--text); text-align: center; margin-bottom: 8px;
+}
+.qr-cupos {
+  font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--accent); opacity: 0.8; text-align: center;
+}
+.qr-close {
+  position: absolute; top: 24px; right: 24px;
+  background: transparent; border: 0.5px solid var(--border);
+  color: var(--muted); width: 44px; height: 44px;
+  cursor: pointer; font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--transition);
+}
+.qr-close:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ══════════════════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════════════════ */
+.site-footer {
+  padding: 56px 24px 40px;
+  text-align: center; border-top: 0.5px solid var(--border);
+}
+.footer-novios {
+  font-family: var(--font-serif); font-size: 32px; font-weight: 300;
+  font-style: italic; color: var(--muted); margin-bottom: 16px;
+}
+.footer-year {
+  font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--border);
+}
+
+/* ══════════════════════════════════════════════════════════
+   POST-EVENTO
+══════════════════════════════════════════════════════════ */
+#post-hero {
+  height: 100vh; position: relative;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 100px; text-align: center; overflow: hidden;
+}
+#post-hero-bg {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  animation: hero-zoom 20s ease-in-out infinite alternate;
+}
+.post-hero-overlay {
+  position: absolute; inset: -4px;
+  background:
+    linear-gradient(to top,
+      rgba(10,10,10,1.00)  0%,
+      rgba(10,10,10,0.98) 18%,
+      rgba(10,10,10,0.92) 35%,
+      rgba(10,10,10,0.70) 50%,
+      rgba(10,10,10,0.00) 62%
+    ),
+    linear-gradient(to bottom,
+      rgba(10,10,10,0.60) 0%,
+      rgba(10,10,10,0.00) 28%
+    );
+}
+.post-hero-content {
+  position: relative; z-index: 2;
+  animation: fade-in-up 1.2s ease both;
+}
+.post-hero-eyebrow {
+  font-size: 11px; letter-spacing: 0.6em; text-transform: uppercase;
+  color: var(--accent); opacity: 0.8; margin-bottom: 20px;
+}
+.post-hero-gracias {
+  font-family: var(--font-serif); font-size: clamp(40px, 9vw, 72px);
+  font-weight: 300; font-style: italic; color: var(--text);
+  line-height: 1.1; margin-bottom: 20px;
+  text-shadow: 0 2px 40px rgba(0,0,0,0.5);
+}
+.post-hero-novios {
+  font-family: var(--font-serif); font-size: 20px; font-weight: 300;
+  color: var(--accent); letter-spacing: 0.1em;
+}
+
+/* Comentarios */
+.post-comentario {
+  padding: 28px 0;
+  border-bottom: 0.5px solid var(--border);
+  animation: fade-in-up 0.6s ease both;
+}
+.post-comentario:last-child { border-bottom: none; }
+.post-com-nombre {
+  font-family: var(--font-serif); font-size: 18px; font-weight: 300;
+  color: var(--accent); margin-bottom: 10px; letter-spacing: 0.05em;
+}
+.post-com-texto {
+  font-size: 15px; color: rgba(240,236,228,0.8);
+  line-height: 1.9; font-style: italic;
+}
+.post-loading { text-align: center; padding: 40px 0; }
+.post-sin-mensajes {
+  text-align: center; padding: 48px 0;
+  font-size: 14px; color: var(--muted); font-style: italic;
+}
+
+/* Cierre */
+.post-cierre {
+  padding: 60px 28px 80px; text-align: center;
+  border-top: 0.5px solid var(--border); max-width: 680px; margin: 0 auto;
+}
+.post-cierre-texto {
+  font-family: var(--font-serif); font-size: 22px; font-weight: 300;
+  font-style: italic; color: var(--muted); line-height: 1.8;
+}
+
+/* ── FADE-IN ────────────────────────────────────────────── */
+.fade-up {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.fade-up.visible { opacity: 1; transform: none; }
+
+/* ── GALERÍA CAROUSEL (formato historia 9:16) ──────────── */
+.galeria-outer {
+  /* Centra la historia en pantalla, máx 380px como IG */
+  display: flex; justify-content: center;
+}
+.galeria-frame {
+  position: relative; overflow: hidden;
+  background: #0d0d0d;
+  border: 1px solid rgba(201,169,110,0.25);
+  padding: 10px;
+  user-select: none;
+  width: 100%; max-width: 360px;
+  /* Marco exterior art déco */
+  box-shadow:
+    0 0 0 1px rgba(201,169,110,0.08),
+    inset 0 0 0 1px rgba(201,169,110,0.08);
+}
+/* Esquinas art déco exteriores */
+.galeria-deco-tl, .galeria-deco-tr,
+.galeria-deco-bl, .galeria-deco-br {
+  position: absolute; width: 20px; height: 20px;
+  border-color: var(--accent); border-style: solid; opacity: 0.8; z-index: 10;
+}
+.galeria-deco-tl { top: 3px;  left: 3px;   border-width: 1px 0 0 1px; }
+.galeria-deco-tr { top: 3px;  right: 3px;  border-width: 1px 1px 0 0; }
+.galeria-deco-bl { bottom:3px; left: 3px;  border-width: 0 0 1px 1px; }
+.galeria-deco-br { bottom:3px; right: 3px; border-width: 0 1px 1px 0; }
+
+.galeria-viewport {
+  overflow: hidden; position: relative;
+  /* 9:16 ratio */
+  aspect-ratio: 9 / 16;
+}
+.galeria-track {
+  display: flex; height: 100%;
+  transition: transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);
+  will-change: transform;
+}
+.galeria-slide {
+  /* Siempre ancho del viewport, no puede encogerse */
+  min-width: 100%; height: 100%;
+  background-size: cover; background-position: center;
+  flex-shrink: 0;
+}
+.galeria-btn {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: rgba(10,10,10,0.65); border: 1px solid rgba(201,169,110,0.35);
+  color: var(--accent); width: 40px; height: 40px;
+  font-size: 16px; cursor: pointer; z-index: 5;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.25s; backdrop-filter: blur(4px);
+}
+.galeria-btn:hover { background: rgba(201,169,110,0.18); border-color: var(--accent); }
+.galeria-prev { left: 14px; }
+.galeria-next { right: 14px; }
+.galeria-dots {
+  position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 8px; z-index: 5;
+}
+.galeria-dot {
+  width: 5px; height: 5px;
+  border: 1px solid rgba(201,169,110,0.55);
+  background: transparent; cursor: pointer; transition: all 0.3s;
+  transform: rotate(45deg);
+}
+.galeria-dot.active { background: var(--accent); border-color: var(--accent); transform: rotate(45deg) scale(1.3); }
+
+/* ── ÍCONOS DE SECCIÓN ──────────────────────────────────── */
+.section-icon {
+  display: block; width: 52px; height: 52px;
+  margin: 0 auto 20px;
+  /* Negro → blanco → dorado accent (#c9a96e) */
+  filter: invert(1) sepia(1) saturate(2) hue-rotate(5deg) brightness(0.9);
+  opacity: 0.85;
+}
+.ornament-con-icono {
+  display: flex; flex-direction: column; align-items: center;
+  margin-bottom: 32px;
+}
+.ornament-con-icono .ornament {
+  margin-bottom: 0; width: 100%;
+}
+
+/* ── RESPONSIVE ────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .countdown-num { font-size: 26px; }
+  .hero-novios   { font-size: 52px; }
+  .btn-group     { grid-template-columns: 1fr; }
+  .section       { padding: 52px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ PANTALLA LOGIN ══════════════════════════════════════ -->
+<div id="screen-login">
+  <div class="login-slides" id="slides"></div>
+  <div class="login-overlay"></div>
+
+  <div class="login-content">
+    <p class="login-marca" id="login-marca">BODA</p>
+
+    <div class="login-countdown" id="login-countdown">
+      <div class="countdown-unit">
+        <span class="countdown-num" id="cd-d">--</span>
+        <span class="countdown-label">días</span>
+      </div>
+      <span class="countdown-sep">·</span>
+      <div class="countdown-unit">
+        <span class="countdown-num" id="cd-h">--</span>
+        <span class="countdown-label">horas</span>
+      </div>
+      <span class="countdown-sep">·</span>
+      <div class="countdown-unit">
+        <span class="countdown-num" id="cd-m">--</span>
+        <span class="countdown-label">min</span>
+      </div>
+      <span class="countdown-sep">·</span>
+      <div class="countdown-unit">
+        <span class="countdown-num" id="cd-s">--</span>
+        <span class="countdown-label">seg</span>
+      </div>
+    </div>
+
+    <p class="login-subtitle" id="login-subtitle">Ingresá tu código y comenzá a vivir este evento desde ahora</p>
+
+    <div class="login-form">
+      <div class="code-input-wrap">
+        <input
+          type="text" id="code-input"
+          maxlength="4" placeholder="C032"
+          autocomplete="off" autocorrect="off" spellcheck="false"
+        >
+        <button class="btn-primary" id="btn-login">INGRESAR</button>
+      </div>
+      <p class="login-error hidden" id="login-error"></p>
+      <div class="spinner hidden" id="spinner"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ BIENVENIDA (3 seg) ══════════════════════════════════ -->
+<div id="bienvenida" class="hidden">
+  <p class="hola-pre">Bienvenido/a</p>
+  <p class="hola-nombre" id="hola-nombre">—</p>
+</div>
+
+<!-- ══ CONTENIDO PRINCIPAL (oculto hasta login) ═══════════ -->
+<main id="main-content" class="hidden">
+
+  <!-- 2. HERO -->
+  <section id="hero">
+    <div class="hero-bg" id="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-titulo">NUESTRA BODA</p>
+      <div class="hero-novios">
+        <span id="hero-nombre1">Valentina</span>
+        <span class="amp">&amp;</span>
+        <span id="hero-nombre2">Martín</span>
+      </div>
+      <div class="hero-fecha" id="hero-fecha">
+        <span class="hero-fecha-dia" id="hero-fecha-dia">—</span>
+        <span class="hero-fecha-num" id="hero-fecha-num">—</span>
+      </div>
+    </div>
+    <div class="hero-scroll">Scroll</div>
+  </section>
+
+  <!-- CHECK-IN (debajo del hero, oculto en pre-evento) -->
+  <section class="section fade-up" id="section-checkin">
+    <div class="ornament">Check-in</div>
+    <div class="checkin-bloqueado" id="checkin-bloqueado">
+      <div class="lock-icon">⌛</div>
+      <h3>Tu acceso al evento</h3>
+      <p>El QR de ingreso se activará el día del evento a partir de la hora configurada.</p>
+      <div class="checkin-hora" id="checkin-hora-aviso">—</div>
+      <div class="checkin-calendario">
+        <p class="checkin-cal-hint">Guardá el evento en tu calendario para no olvidarte tu código de acceso.</p>
+        <button class="btn-calendario" onclick="agregarCalendario()" id="btn-calendario" style="margin-top:32px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          AGREGAR AL CALENDARIO
+        </button>
+      </div>
+    </div>
+
+    <!-- Se muestra cuando el check-in está activo -->
+    <div id="checkin-activo" class="hidden" style="text-align:center">
+      <p class="section-title">Tu QR de ingreso</p>
+      <p style="color:var(--muted);font-size:14px;margin:12px 0 32px;line-height:1.9">
+        Mostrá este código en la entrada del salón.
+      </p>
+      <button class="btn-primary" onclick="mostrarQR()" style="margin:0 auto;display:block;padding:18px 40px">
+        MOSTRAR QR
+      </button>
+      <p style="color:var(--muted);font-size:12px;margin-top:20px;letter-spacing:0.05em" id="checkin-volver"></p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 3. EVENTO -->
+  <section class="section fade-up" id="section-evento">
+    <div class="ornament-con-icono">
+      <img src="img/ceremonia.png" alt="" class="section-icon">
+      <div class="ornament">El evento</div>
+    </div>
+
+    <div id="evento-ceremonia" class="evento-bloque"></div>
+    <div id="evento-fiesta"    class="evento-bloque"></div>
+
+    <div class="evento-aviso">
+      <p><strong>Recordá:</strong> el día del evento volvé a ingresar a esta página. Acá se generará tu QR personal para acceder al salón.</p>
+      <p id="evento-aviso-form">Más adelante te vamos a pedir que nos confirmes tu presencia y unos datos más para hacer de este evento algo soñado para todos.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 4. DRESS CODE -->
+  <section class="section fade-up" id="section-dresscode">
+    <div class="ornament-con-icono">
+      <img src="img/dresscode.png" alt="" class="section-icon">
+      <div class="ornament">Dress code</div>
+    </div>
+    <div class="dresscode-card">
+      <div class="dresscode-main">
+        <div class="dresscode-tipo" id="dc-tipo">Formal</div>
+        <p class="dresscode-desc" id="dc-desc">—</p>
+      </div>
+      <div class="dresscode-aside hidden" id="dc-evitar-wrap">
+        <p class="dresscode-aside-label">A evitar</p>
+        <div class="dresscode-evitar">
+          <span class="dresscode-evitar-x">×</span>
+          <span id="dc-evitar">—</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 5. REGALOS -->
+  <section class="section fade-up hidden" id="section-regalos">
+    <div class="ornament-con-icono">
+      <img src="img/regalo.png" alt="" class="section-icon">
+      <div class="ornament">Lista de regalos</div>
+    </div>
+    <div class="regalo-card">
+      <div class="regalo-moneda-bloque hidden" id="regalo-pesos-bloque">
+        <div class="regalo-moneda-titulo">Pesos argentinos</div>
+        <p class="regalo-banco-moneda" id="regalo-banco-pesos"></p>
+        <div id="regalo-alias-wrap" class="regalo-row hidden">
+          <div class="regalo-row-info">
+            <p class="regalo-dato-label">Alias</p>
+            <p class="regalo-dato-valor" id="regalo-alias">—</p>
+          </div>
+          <button class="btn-icon-copy" id="btn-copy-alias" onclick="copiar('alias')" title="Copiar alias">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+        <div id="regalo-cbu-wrap" class="regalo-row hidden">
+          <div class="regalo-row-info">
+            <p class="regalo-dato-label">CBU</p>
+            <p class="regalo-dato-valor" id="regalo-cbu">—</p>
+          </div>
+          <button class="btn-icon-copy" id="btn-copy-cbu" onclick="copiar('cbu')" title="Copiar CBU">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="regalo-moneda-bloque hidden" id="regalo-dolares-bloque">
+        <div class="regalo-moneda-titulo" style="border-top:0.5px solid var(--border);margin-top:20px;padding-top:20px">Dólares</div>
+        <p class="regalo-banco-moneda" id="regalo-banco-dolares"></p>
+
+        <div id="regalo-alias-usd-wrap" class="regalo-row hidden">
+          <div class="regalo-row-info">
+            <p class="regalo-dato-label">Alias USD</p>
+            <p class="regalo-dato-valor" id="regalo-alias-usd">—</p>
+          </div>
+          <button class="btn-icon-copy" id="btn-copy-alias-usd" onclick="copiar('alias-usd')" title="Copiar alias USD">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+        <div id="regalo-cbu-usd-wrap" class="regalo-row hidden">
+          <div class="regalo-row-info">
+            <p class="regalo-dato-label">CBU USD</p>
+            <p class="regalo-dato-valor" id="regalo-cbu-usd">—</p>
+          </div>
+          <button class="btn-icon-copy" id="btn-copy-cbu-usd" onclick="copiar('cbu-usd')" title="Copiar CBU USD">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+      </div><!-- fin dolares-bloque -->
+
+      <div class="regalo-sobre hidden" id="regalo-nota-wrap">
+        <p class="regalo-nota" id="regalo-nota"></p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider" id="div-before-confirm"></div>
+
+  <!-- 6. CONFIRMACIÓN -->
+  <section class="section fade-up" id="section-confirmacion">
+    <div class="ornament-con-icono">
+      <img src="img/fiesta.png" alt="" class="section-icon">
+      <div class="ornament">Tu asistencia</div>
+    </div>
+    <p class="confirm-nombre" id="confirm-nombre">—</p>
+    <p class="confirm-sub">¿Podrás acompañarnos en este día tan especial?</p>
+    <p class="confirm-cupos" id="confirm-cupos"></p>
+
+    <div class="btn-group">
+      <button class="btn-confirm" id="btn-si"  onclick="seleccionarAsistencia(true)">Asistiré</button>
+      <button class="btn-confirm" id="btn-no"  onclick="seleccionarAsistencia(false)">No podré</button>
+    </div>
+
+    <div id="form-confirmacion" class="hidden"></div>
+    <div id="form-success" class="form-success hidden">
+      <div class="check">✓</div>
+      <p>¡Gracias! Tu confirmación fue registrada. Nos vemos pronto.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- GALERÍA -->
+  <section class="section fade-up" id="section-galeria">
+    <div class="ornament">Galería</div>
+    <div class="galeria-outer">
+      <div class="galeria-frame">
+        <div class="galeria-deco-tl"></div>
+        <div class="galeria-deco-tr"></div>
+        <div class="galeria-deco-bl"></div>
+        <div class="galeria-deco-br"></div>
+        <div class="galeria-viewport">
+          <div class="galeria-track" id="galeria-track"></div>
+          <button class="galeria-btn galeria-prev" onclick="galeriaNav(-1)" aria-label="Anterior">&#8592;</button>
+          <button class="galeria-btn galeria-next" onclick="galeriaNav(1)"  aria-label="Siguiente">&#8594;</button>
+          <div class="galeria-dots" id="galeria-dots"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 7. MENSAJE NOVIOS -->
+  <section class="section fade-up" id="section-mensaje">
+    <div class="ornament">Para los novios</div>
+    <p class="section-title">Dejales un mensaje</p>
+    <p class="mensaje-hint" id="mensaje-hint">Si querés dejarles unas palabras...</p>
+
+    <div class="form-field">
+      <textarea id="mensaje-novios" placeholder="Escribí lo que querás..."></textarea>
+    </div>
+    <p class="mensaje-aviso">⟡ Este mensaje será público y aparecerá en la pantalla del post-evento.</p>
+
+    <button class="btn-submit" id="btn-guardar-mensaje" onclick="guardarMensaje()">GUARDAR MENSAJE</button>
+    <div id="mensaje-ok" class="form-success hidden" style="margin-top:16px">
+      <div class="check">✓</div>
+      <p>Mensaje guardado. Los novios lo verán después de la fiesta.</p>
+    </div>
+  </section>
+
+
+  <!-- QR Modal -->
+  <div id="qr-modal" class="hidden">
+    <button class="qr-close" onclick="cerrarQR()">×</button>
+    <div class="qr-header" id="qr-header">
+      <p class="qr-evento-titulo">NUESTRA BODA</p>
+      <p class="qr-evento-novios" id="qr-novios">—</p>
+      <p class="qr-evento-fecha-dia"  id="qr-fecha-dia">—</p>
+      <p class="qr-evento-fecha-num"  id="qr-fecha-num">—</p>
+    </div>
+    <div id="qr-canvas-wrap"><canvas id="qr-canvas" width="256" height="256"></canvas></div>
+    <div style="text-align:center">
+      <p class="qr-nombre" id="qr-nombre">—</p>
+      <p class="qr-cupos" id="qr-cupos">—</p>
+    </div>
+  </div>
+
+  <!-- POST-EVENTO (oculto hasta que se active la fase) -->
+  <div id="post-evento" class="hidden">
+
+    <!-- Hero post-evento (reemplaza al normal) -->
+    <section id="post-hero">
+      <div class="hero-bg" id="post-hero-bg"></div>
+      <div class="post-hero-overlay"></div>
+      <div class="post-hero-content">
+        <p class="post-hero-eyebrow">NUESTRA BODA</p>
+        <p class="post-hero-gracias" id="post-titulo">—</p>
+        <p class="post-hero-novios" id="post-novios">—</p>
+      </div>
+    </section>
+
+    <!-- Comentarios -->
+    <section class="section" id="post-comentarios-section">
+      <div class="ornament">Sus palabras</div>
+      <div id="post-comentarios-lista">
+        <div class="post-loading">
+          <div class="spinner" style="margin:0 auto 16px"></div>
+          <p style="color:var(--muted);font-size:13px">Cargando mensajes...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cierre -->
+    <section class="post-cierre">
+      <p class="post-cierre-texto" id="post-cierre">—</p>
+    </section>
+
+  </div>
+
+  <footer class="site-footer" id="site-footer">
+    <p class="footer-novios" id="footer-novios">—</p>
+    <p class="footer-year" id="footer-year">—</p>
+  </footer>
+
+</main>
+
+<!-- QR Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="config.js"></script>
+<script>
+// ════════════════════════════════════════════════════════════
+//  ESTADO GLOBAL
+// ════════════════════════════════════════════════════════════
+let INVITADO   = null;   // datos traídos del Sheet
+let ASISTENCIA = null;   // true/false
+let GUESTS     = [];     // array con la data de cada invitado del form
+
+// ════════════════════════════════════════════════════════════
+//  INICIALIZACIÓN
+// ════════════════════════════════════════════════════════════
+document.addEventListener("DOMContentLoaded", () => {
+  aplicarConfig();
+  initArtDeco();
+  initSlideshow();
+  initCountdown();
+  initFadeObserver();
+  initGaleria();
+  renderRegalos();
+
+  // Enter en el input
+  document.getElementById("code-input").addEventListener("keydown", e => {
+    if (e.key === "Enter") login();
+  });
+  document.getElementById("btn-login").addEventListener("click", login);
+});
+
+// ── Aplicar CONFIG al DOM estático ──────────────────────────
+function aplicarConfig() {
+  const C = CONFIG;
+
+  // Paleta
+  const r = document.documentElement.style;
+  r.setProperty("--bg",        C.PALETA.fondo);
+  r.setProperty("--surface",   C.PALETA.superficie);
+  r.setProperty("--border",    C.PALETA.borde);
+  r.setProperty("--accent",    C.PALETA.acento);
+  r.setProperty("--accent-lt", C.PALETA.acentoClaro);
+  r.setProperty("--text",      C.PALETA.texto);
+  r.setProperty("--muted",     C.PALETA.textoMuted);
+
+  // Textos estáticos
+  document.getElementById("login-marca").textContent =
+    `${C.NOVIOS.nombre1.toUpperCase()} & ${C.NOVIOS.nombre2.toUpperCase()}`;
+  document.getElementById("login-subtitle").textContent = C.TEXTOS.loginSubtitulo;
+  document.getElementById("mensaje-hint").textContent   = C.TEXTOS.mensajeNovios;
+
+  // Hero
+  document.getElementById("hero-bg").style.backgroundImage = `url('${C.IMAGENES.hero}')`;
+  document.getElementById("hero-nombre1").textContent = C.NOVIOS.nombre1;
+  document.getElementById("hero-nombre2").textContent = C.NOVIOS.nombre2;
+  const fechaObj = new Date(C.FECHA_EVENTO);
+  const diaSemana = fechaObj.toLocaleDateString("es-AR", { weekday: "long" });
+  const diaNumero = fechaObj.toLocaleDateString("es-AR", { day: "numeric", month: "long", year: "numeric" });
+  const diaEl = document.getElementById("hero-fecha-dia");
+  const numEl = document.getElementById("hero-fecha-num");
+  if (diaEl) diaEl.textContent = diaSemana;
+  if (numEl) numEl.textContent = diaNumero;
+
+  // Footer
+  document.getElementById("footer-novios").textContent =
+    `${C.NOVIOS.nombre1} & ${C.NOVIOS.nombre2}`;
+  document.getElementById("footer-year").textContent   =
+    new Date(C.FECHA_EVENTO).getFullYear();
+
+  // Dress code
+  document.getElementById("dc-tipo").textContent = C.DRESSCODE.tipo;
+  document.getElementById("dc-desc").textContent = C.DRESSCODE.descripcion;
+  if (C.DRESSCODE.evitar) {
+    document.getElementById("dc-evitar").textContent = C.DRESSCODE.evitar;
+    document.getElementById("dc-evitar-wrap").classList.remove("hidden");
+  }
+
+  // Regalos — manejado por renderRegalos()
+
+  // Locaciones
+  renderLocaciones();
+
+  // Check-in hora
+  const fechaEvento = new Date(C.FECHA_EVENTO);
+  const fechaStr    = fechaEvento.toLocaleDateString("es-AR", {day:"numeric",month:"long"});
+  document.getElementById("checkin-hora-aviso").textContent =
+    `Disponible el ${fechaStr} a las ${C.HORA_CHECKIN} hs`;
+  document.getElementById("checkin-volver").textContent =
+    `Volvé mañana a las ${C.HORA_POST} hs para ver el mensaje de los novios`;
+
+  document.title = `Boda ${C.NOVIOS.nombre1} & ${C.NOVIOS.nombre2}`;
+}
+
+function renderLocaciones() {
+  const loc = CONFIG.LOCACIONES;
+
+  if (loc.ceremonia && loc.ceremonia.nombre) {
+    document.getElementById("evento-ceremonia").innerHTML = bloqueLocacion("Ceremonia", loc.ceremonia);
+  }
+  if (loc.fiesta && loc.fiesta.nombre) {
+    document.getElementById("evento-fiesta").innerHTML = bloqueLocacion("Fiesta", loc.fiesta);
+  }
+}
+
+function bloqueLocacion(tag, loc) {
+  const mapFilter = CONFIG.MAPA_COLOR || "grayscale(1) brightness(0.5) sepia(0.3) contrast(1.1)";
+  const gmapsUrl  = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(loc.direccion);
+  return `
+    <p class="evento-tag">${tag}</p>
+    <p class="evento-nombre">${loc.nombre}</p>
+    <p class="evento-dir">${loc.direccion}</p>
+    <p class="evento-hora">${loc.hora}</p>
+    ${loc.mapSrc ? `
+      <div class="mapa-container">
+        <div class="mapa-esquinas"><span></span></div>
+        <div class="mapa-wrap">
+          <iframe
+            src="${loc.mapSrc}"
+            allowfullscreen loading="lazy"
+            style="filter:${mapFilter}"
+          ></iframe>
+        </div>
+        <div class="mapa-footer">
+          <span class="mapa-label">${loc.direccion}</span>
+          <a class="mapa-ver" href="${gmapsUrl}" target="_blank">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            Ver mapa
+          </a>
+        </div>
+      </div>` : ""}
+  `;
+}
+
+// ════════════════════════════════════════════════════════════
+//  SLIDESHOW LOGIN
+// ════════════════════════════════════════════════════════════
+function initSlideshow() {
+  const wrap  = document.getElementById("slides");
+  const imgs  = CONFIG.IMAGENES.slideshow;
+  let current = 0;
+
+  imgs.forEach((src, i) => {
+    const div = document.createElement("div");
+    div.className = "login-slide" + (i === 0 ? " active" : "");
+    div.style.backgroundImage = `url('${src}')`;
+    wrap.appendChild(div);
+  });
+
+  setInterval(() => {
+    const slides = wrap.querySelectorAll(".login-slide");
+    slides[current].classList.remove("active");
+    current = (current + 1) % slides.length;
+    slides[current].classList.add("active");
+  }, 4000);
+}
+
+// ════════════════════════════════════════════════════════════
+//  COUNTDOWN
+// ════════════════════════════════════════════════════════════
+function initCountdown() {
+  function tick() {
+    const target = new Date(CONFIG.FECHA_EVENTO).getTime();
+    const diff   = target - Date.now();
+    if (diff <= 0) {
+      document.getElementById("login-countdown").innerHTML =
+        `<span style="font-family:var(--font-serif);font-size:28px;color:var(--accent);letter-spacing:0.1em">✦ Es hoy ✦</span>`;
+      return;
+    }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000)  / 60000);
+    const s = Math.floor((diff % 60000)    / 1000);
+    document.getElementById("cd-d").textContent = String(d).padStart(2,"0");
+    document.getElementById("cd-h").textContent = String(h).padStart(2,"0");
+    document.getElementById("cd-m").textContent = String(m).padStart(2,"0");
+    document.getElementById("cd-s").textContent = String(s).padStart(2,"0");
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+
+// ════════════════════════════════════════════════════════════
+//  LOGIN
+// ════════════════════════════════════════════════════════════
+async function login() {
+  const input   = document.getElementById("code-input");
+  const errorEl = document.getElementById("login-error");
+  const spinner = document.getElementById("spinner");
+  const btnLogin= document.getElementById("btn-login");
+  const code    = input.value.toUpperCase().trim();
+
+  // Validación formato: 1 letra + 3 números
+  if (!/^[A-Z]\d{3}$/.test(code)) {
+    mostrarError("Revisá tu código de acceso y volvé a intentarlo");
+    return;
+  }
+
+  errorEl.classList.add("hidden");
+  spinner.classList.remove("hidden");
+  btnLogin.disabled = true;
+
+  jsonp(CONFIG.SCRIPT_URL, { action: "login", code: code }, function(data) {
+    spinner.classList.add("hidden");
+    if (data.success) {
+      INVITADO = data;
+      INVITADO.id = data.id || code;
+      mostrarBienvenida(data.nombre);
+    } else {
+      btnLogin.disabled = false;
+      mostrarError(CONFIG.TEXTOS.loginError);
+    }
+  }, function() {
+    spinner.classList.add("hidden");
+    btnLogin.disabled = false;
+    mostrarError("Error de conexión. Intentá de nuevo.");
+  });
+}
+
+function mostrarError(msg) {
+  const el = document.getElementById("login-error");
+  el.textContent = msg;
+  el.classList.remove("hidden");
+}
+
+// ── Bienvenida 3 segundos ───────────────────────────────────
+function mostrarBienvenida(nombre) {
+  const bv = document.getElementById("bienvenida");
+  document.getElementById("hola-nombre").textContent = nombre;
+  bv.classList.remove("hidden");
+  // Ocultar login inmediatamente para evitar empaste de capas
+  document.getElementById("screen-login").classList.add("hidden");
+
+  setTimeout(() => {
+    bv.style.opacity = "0";
+    // Iniciar app ANTES de ocultar bienvenida para que el main ya esté listo
+    iniciarApp();
+    setTimeout(() => {
+      bv.classList.add("hidden");
+      bv.style.opacity = "1";
+    }, 800);
+  }, 2600);
+}
+
+// ════════════════════════════════════════════════════════════
+//  INICIAR APP POST-LOGIN
+// ════════════════════════════════════════════════════════════
+function iniciarApp() {
+  // Ocultar login
+  document.getElementById("screen-login").classList.add("hidden");
+
+  // Mostrar contenido
+  const main = document.getElementById("main-content");
+  main.classList.remove("hidden");
+
+  // Nombre en confirmación
+  document.getElementById("confirm-nombre").textContent =
+    `${INVITADO.nombre} ${INVITADO.apellido}`;
+
+  // Mensaje de cupos
+  const cupos = parseInt(INVITADO.cupos) || 1;
+  const acompañantes = cupos - 1;
+  let msgCupos = "";
+  if (cupos === 1) {
+    msgCupos = "Esta invitación es personal e individual.";
+  } else if (cupos === 2) {
+    msgCupos = "Esta es tu invitación y la de tu acompañante.";
+  } else {
+    msgCupos = `Esta es tu invitación y la de tus ${acompañantes} acompañantes.`;
+  }
+  document.getElementById("confirm-cupos").textContent = msgCupos;
+
+  // Detectar fase (pre / checkin / post)
+  const fase = detectarFase();
+  configurarFase(fase);
+}
+
+// ════════════════════════════════════════════════════════════
+//  DETECCIÓN DE FASE
+// ════════════════════════════════════════════════════════════
+function detectarFase() {
+  const ahora      = new Date();
+  const evento     = new Date(CONFIG.FECHA_EVENTO);
+  const diaEvento  = new Date(evento.toDateString());
+  const diaHoy     = new Date(ahora.toDateString());
+  const mañana     = new Date(diaEvento); mañana.setDate(mañana.getDate() + 1);
+
+  const [hC, mC]   = CONFIG.HORA_CHECKIN.split(":").map(Number);
+  const [hP, mP]   = CONFIG.HORA_POST.split(":").map(Number);
+
+  const inicioCheckin = new Date(diaEvento);
+  inicioCheckin.setHours(hC, mC, 0, 0);
+
+  const inicioPost = new Date(mañana);
+  inicioPost.setHours(hP, mP, 0, 0);
+
+  if (ahora >= inicioPost) return "post";
+  if (ahora >= inicioCheckin && diaHoy.getTime() === diaEvento.getTime()) return "checkin";
+  return "pre";
+}
+
+function configurarFase(fase) {
+  if (fase === "checkin") {
+    document.getElementById("checkin-bloqueado").classList.add("hidden");
+    document.getElementById("checkin-activo").classList.remove("hidden");
+  }
+
+  if (fase === "post") {
+    activarPostEvento();
+  }
+}
+
+function activarPostEvento() {
+  const C = CONFIG;
+
+  // Ocultar todo el contenido normal excepto el hero
+  const secciones = [
+    "section-checkin", "section-evento", "section-dresscode",
+    "section-regalos", "div-before-confirm", "section-confirmacion",
+    "section-galeria", "section-mensaje", "section-checkin"
+  ];
+  secciones.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add("hidden");
+  });
+  // Ocultar dividers
+  document.querySelectorAll(".divider").forEach(el => el.classList.add("hidden"));
+
+  // Ocultar hero original
+  document.getElementById("hero").classList.add("hidden");
+
+  // Mostrar post-evento
+  document.getElementById("post-evento").classList.remove("hidden");
+
+  // Foto post-evento
+  document.getElementById("post-hero-bg").style.backgroundImage =
+    `url('${C.IMAGENES.postEvento}')`;
+
+  // Textos
+  document.getElementById("post-titulo").textContent  = C.TEXTOS.postEventoTitulo;
+  document.getElementById("post-novios").textContent  =
+    `${C.NOVIOS.nombre1} & ${C.NOVIOS.nombre2}`;
+  document.getElementById("post-cierre").textContent  = C.TEXTOS.postEventoTexto;
+
+  // Cargar comentarios desde el Sheet
+  cargarComentarios();
+}
+
+function cargarComentarios() {
+  jsonp(CONFIG.SCRIPT_URL, { action: "comentarios" }, data => {
+    const lista = document.getElementById("post-comentarios-lista");
+
+    if (!data.success || !data.comments || !data.comments.length) {
+      lista.innerHTML = `<p class="post-sin-mensajes">Todavía no hay mensajes publicados.</p>`;
+      return;
+    }
+
+    lista.innerHTML = "";
+    data.comments.forEach((c, i) => {
+      const div = document.createElement("div");
+      div.className = "post-comentario";
+      div.style.animationDelay = (i * 0.08) + "s";
+      div.innerHTML = `
+        <p class="post-com-nombre">${c.nombre}</p>
+        <p class="post-com-texto">${c.mensaje}</p>
+      `;
+      lista.appendChild(div);
+    });
+
+  }, () => {
+    document.getElementById("post-comentarios-lista").innerHTML =
+      `<p class="post-sin-mensajes">No se pudieron cargar los mensajes.</p>`;
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+//  CONFIRMACIÓN DE ASISTENCIA
+// ════════════════════════════════════════════════════════════
+function seleccionarAsistencia(asiste) {
+  ASISTENCIA = asiste;
+  const btnSi = document.getElementById("btn-si");
+  const btnNo = document.getElementById("btn-no");
+
+  btnSi.className = "btn-confirm" + (asiste  ? " selected-yes" : "");
+  btnNo.className = "btn-confirm" + (!asiste ? " selected-no"  : "");
+
+  const formEl = document.getElementById("form-confirmacion");
+  formEl.classList.remove("hidden");
+
+  if (!asiste) {
+    formEl.innerHTML = `
+      <div class="evento-aviso" style="margin-top:0">
+        <p>Lamentamos que no puedas acompañarnos. ¡Igual te mandamos un abrazo enorme!</p>
+      </div>
+    `;
+    // Ocultar sección check-in para quien no asiste
+    const secCheckin = document.getElementById("section-checkin");
+    if (secCheckin) secCheckin.classList.add("hidden");
+    GUESTS = [{ nombre: INVITADO.nombre, apellido: INVITADO.apellido, confirma: false }];
+    guardarSilencioso();
+    return;
+  }
+
+  // Construir formulario
+  const cupos = parseInt(INVITADO.cupos) || 1;
+  formEl.innerHTML = renderFormGuest(0, true) + renderAcompanantes(cupos);
+
+  const btn = document.createElement("button");
+  btn.className   = "btn-submit";
+  btn.textContent = "ENVIAR";
+  btn.onclick     = enviarConfirmacion;
+  formEl.appendChild(btn);
+}
+
+function renderFormGuest(idx, esPrincipal) {
+  const label = esPrincipal ? "Tus datos" : `Acompañante ${idx}`;
+  return `
+    <div class="form-guest" id="guest-form-${idx}">
+      <p class="guest-label">${label}</p>
+      ${!esPrincipal ? `
+        <div class="form-field">
+          <label>Nombre</label>
+          <input type="text" id="g${idx}-nombre" placeholder="Nombre del acompañante">
+        </div>
+        <div class="form-field">
+          <label>Apellido</label>
+          <input type="text" id="g${idx}-apellido" placeholder="Apellido">
+        </div>
+      ` : ""}
+      <div class="form-field">
+        <label>Preferencia de comida</label>
+        <select id="g${idx}-comida">
+          <option value="">— SELECCIONÁ —</option>
+          <option value="NORMAL">NORMAL</option>
+          <option value="VEGANO">VEGANO</option>
+          <option value="VEGETARIANO">VEGETARIANO</option>
+          <option value="KOSHER">KOSHER</option>
+          <option value="SIN TACC">SIN TACC</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>¿Tenés alguna alergia?</label>
+        <select id="g${idx}-alergia" onchange="toggleAlergia(${idx})">
+          <option value="">— SELECCIONÁ —</option>
+          <option value="no">NO</option>
+          <option value="si">SÍ</option>
+        </select>
+      </div>
+      <div class="form-field hidden" id="g${idx}-alergia-detalle-wrap">
+        <label>Detallá tu alergia</label>
+        <input type="text" id="g${idx}-alergia-detalle" placeholder="Ej: mariscos, lactosa...">
+      </div>
+    </div>
+  `;
+}
+
+function renderAcompanantes(cupos) {
+  if (cupos <= 1) return "";
+
+  let html = `<div style="margin-top:40px;padding-top:40px;border-top:0.5px solid var(--border)">`;
+
+  for (let i = 1; i < cupos; i++) {
+    html += `
+      <div id="acomp-bloque-${i}" style="margin-bottom:32px">
+        <p class="guest-label" style="margin-bottom:16px">Acompañante ${i}</p>
+        <div class="acompanante-btn-group">
+          <button class="acomp-btn" id="acomp-si-${i}"  onclick="toggleAcomp(${i}, true)">Asistirá</button>
+          <button class="acomp-btn" id="acomp-no-${i}"  onclick="toggleAcomp(${i}, false)">No podrá</button>
+        </div>
+        <div id="acomp-form-${i}" class="hidden">
+          ${renderFormGuest(i, false)}
+        </div>
+      </div>
+    `;
+  }
+
+  html += "</div>";
+  return html;
+}
+
+function toggleAcomp(idx, asiste) {
+  document.getElementById(`acomp-si-${idx}`).className = "acomp-btn" + (asiste  ? " selected-yes" : "");
+  document.getElementById(`acomp-no-${idx}`).className = "acomp-btn" + (!asiste ? " selected-no"  : "");
+
+  const form = document.getElementById(`acomp-form-${idx}`);
+  form.classList.toggle("hidden", !asiste);
+}
+
+function toggleAlergia(idx) {
+  const val  = document.getElementById(`g${idx}-alergia`).value;
+  const wrap = document.getElementById(`g${idx}-alergia-detalle-wrap`);
+  wrap.classList.toggle("hidden", val !== "si");
+}
+
+async function enviarConfirmacion() {
+  const cupos = parseInt(INVITADO.cupos) || 1;
+
+  // Validar principal
+  const comidaPrincipal = document.getElementById("g0-comida")?.value;
+  if (!comidaPrincipal) { alert("Por favor seleccioná tu preferencia de comida."); return; }
+
+  // Armar GUESTS
+  GUESTS = [];
+
+  GUESTS.push({
+    nombre:      INVITADO.nombre,
+    apellido:    INVITADO.apellido,
+    confirma:    true,
+    comida:      comidaPrincipal,
+    alergia:     document.getElementById("g0-alergia")?.value === "si",
+    tipoAlergia: document.getElementById("g0-alergia-detalle")?.value || "-",
+  });
+
+  for (let i = 1; i < cupos; i++) {
+    const siBtnActive = document.getElementById(`acomp-si-${i}`)?.classList.contains("selected-yes");
+    if (!siBtnActive) {
+      GUESTS.push({ confirma: false, nombre: "", apellido: "" });
+      continue;
+    }
+    GUESTS.push({
+      nombre:      document.getElementById(`g${i}-nombre`)?.value || "",
+      apellido:    document.getElementById(`g${i}-apellido`)?.value || "",
+      confirma:    true,
+      comida:      document.getElementById(`g${i}-comida`)?.value  || "-",
+      alergia:     document.getElementById(`g${i}-alergia`)?.value === "si",
+      tipoAlergia: document.getElementById(`g${i}-alergia-detalle`)?.value || "-",
+    });
+  }
+
+  const mensaje = document.getElementById("mensaje-novios")?.value || "-";
+
+  const btnSubmit = document.querySelector("#form-confirmacion .btn-submit");
+  if (btnSubmit) btnSubmit.disabled = true;
+
+  const ok = await apiPost({
+    action:  "guardar",
+    id:      INVITADO.id,
+    guests:  JSON.stringify(GUESTS),
+    mensaje,
+  });
+
+  if (ok) {
+    document.getElementById("form-confirmacion").classList.add("hidden");
+    const successEl = document.getElementById("form-success");
+    successEl.classList.remove("hidden");
+    // Scroll suave hacia el mensaje de éxito, no hacia el carousel
+    setTimeout(() => {
+      successEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+  } else {
+    alert("Hubo un error al guardar. Por favor intentá de nuevo.");
+    if (btnSubmit) btnSubmit.disabled = false;
+  }
+}
+
+async function guardarSilencioso() {
+  await apiPost({
+    action:  "guardar",
+    id:      INVITADO.id,
+    guests:  JSON.stringify(GUESTS),
+    mensaje: "-",
+  });
+}
+
+// ── jsonp: única función de comunicación con Apps Script ─────
+// Inyecta un <script> con callback para evitar CORS desde cualquier origen
+function jsonp(url, params, onSuccess, onError) {
+  const cbName = "__cb_" + Date.now() + "_" + Math.floor(Math.random() * 1e6);
+  params.callback = cbName;
+
+  const parts = [];
+  for (const [k, v] of Object.entries(params)) {
+    parts.push(encodeURIComponent(k) + "=" + encodeURIComponent(String(v)));
+  }
+  const fullUrl = url + "?" + parts.join("&");
+
+  const script = document.createElement("script");
+  script.src   = fullUrl;
+
+  const timeout = setTimeout(() => {
+    cleanup();
+    if (onError) onError(new Error("timeout"));
+  }, 15000);
+
+  function cleanup() {
+    clearTimeout(timeout);
+    delete window[cbName];
+    if (script.parentNode) script.parentNode.removeChild(script);
+  }
+
+  window[cbName] = function(data) {
+    cleanup();
+    if (onSuccess) onSuccess(data);
+  };
+
+  script.onerror = function() {
+    cleanup();
+    if (onError) onError(new Error("script error"));
+  };
+
+  document.head.appendChild(script);
+}
+
+// apiPost usa jsonp y devuelve una Promise para mantener el código async/await
+function apiPost(params) {
+  return new Promise(function(resolve) {
+    jsonp(CONFIG.SCRIPT_URL, params,
+      function(data) { resolve(data.success === true); },
+      function()     { resolve(false); }
+    );
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+//  MENSAJE NOVIOS
+// ════════════════════════════════════════════════════════════
+async function guardarMensaje() {
+  const texto = document.getElementById("mensaje-novios").value.trim();
+  if (!texto) return;
+
+  const btn = document.getElementById("btn-guardar-mensaje");
+  btn.disabled = true;
+
+  const guestsParaMensaje = GUESTS.length
+    ? GUESTS
+    : [{ nombre: INVITADO.nombre, apellido: INVITADO.apellido, confirma: true }];
+
+  const ok = await apiPost({
+    action:  "guardar",
+    id:      INVITADO.id,
+    guests:  JSON.stringify(guestsParaMensaje),
+    mensaje: texto,
+  });
+
+  if (ok) {
+    document.getElementById("mensaje-ok").classList.remove("hidden");
+    btn.classList.add("hidden");
+  } else {
+    btn.disabled = false;
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  CHECK-IN / QR
+// ════════════════════════════════════════════════════════════
+let qrGenerado = false;
+
+function mostrarQR() {
+  const modal = document.getElementById("qr-modal");
+  modal.classList.remove("hidden");
+
+  if (!qrGenerado && INVITADO) {
+    const canvas  = document.getElementById("qr-canvas");
+    const ctx     = canvas.getContext("2d");
+    ctx.clearRect(0, 0, 256, 256);
+
+    // Usar qrcode.js
+    const container = document.createElement("div");
+    // QR apunta a staff.html con el ID del invitado
+    const staffUrl = window.location.href.split("/").slice(0, -1).join("/") + "/staff.html?id=" + INVITADO.id;
+    new QRCode(container, {
+      text:   staffUrl,
+      width:  256,
+      height: 256,
+      correctLevel: QRCode.CorrectLevel.H,
+    });
+
+    setTimeout(() => {
+      const img = container.querySelector("img") || container.querySelector("canvas");
+      if (img) {
+        const tmpCanvas = document.createElement("canvas");
+        tmpCanvas.width  = 256;
+        tmpCanvas.height = 256;
+        const tmpCtx = tmpCanvas.getContext("2d");
+        tmpCtx.drawImage(img, 0, 0, 256, 256);
+        ctx.drawImage(tmpCanvas, 0, 0);
+      }
+    }, 200);
+
+    document.getElementById("qr-nombre").textContent =
+      `${INVITADO.nombre} ${INVITADO.apellido}`;
+    const cupos = parseInt(INVITADO.cupos) || 1;
+    const acomp = cupos - 1;
+    let txtCupos = cupos === 1
+      ? "Invitación individual"
+      : acomp === 1
+        ? "Vos + 1 acompañante"
+        : `Vos + ${acomp} acompañantes`;
+    document.getElementById("qr-cupos").textContent = txtCupos;
+
+    // Header del QR: novios y fecha
+    const C = CONFIG;
+    document.getElementById("qr-novios").textContent =
+      `${C.NOVIOS.nombre1} & ${C.NOVIOS.nombre2}`;
+    const fechaObj = new Date(C.FECHA_EVENTO);
+    document.getElementById("qr-fecha-dia").textContent =
+      fechaObj.toLocaleDateString("es-AR", { weekday: "long" });
+    document.getElementById("qr-fecha-num").textContent =
+      fechaObj.toLocaleDateString("es-AR", { day: "numeric", month: "long", year: "numeric" });
+
+    qrGenerado = true;
+  }
+}
+
+function cerrarQR() {
+  document.getElementById("qr-modal").classList.add("hidden");
+}
+
+// ════════════════════════════════════════════════════════════
+//  AGREGAR AL CALENDARIO — genera .ics universal
+//  Funciona en iOS (Apple Calendar) y Android (Google Calendar)
+// ════════════════════════════════════════════════════════════
+function agregarCalendario() {
+  if (!INVITADO) return;
+
+  const C       = CONFIG;
+  const inicio  = new Date(C.FECHA_EVENTO);
+  const fin     = new Date(inicio.getTime() + 5 * 60 * 60 * 1000); // +5 horas
+
+  // Formato ICS: YYYYMMDDTHHmmss
+  function toICS(d) {
+    return d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+  }
+
+  const titulo     = `Nuestra Boda — ${C.NOVIOS.nombre1} & ${C.NOVIOS.nombre2}`;
+  const lugar      = C.LOCACIONES.fiesta?.nombre || C.LOCACIONES.ceremonia?.nombre || "";
+  const pageUrl    = window.location.href.split("?")[0];
+  const linkConCod = `${pageUrl}?code=${INVITADO.id}`;
+
+  const descripcion = [
+    `Tu código de acceso: ${INVITADO.id}`,
+    ``,
+    `Guardá este código — lo vas a necesitar para el check-in el día del evento.`,
+    ``,
+    `Accedé a tu invitación: ${linkConCod}`,
+  ].join("\n");
+
+  const ics = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Wedding Invite//ES",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    `UID:${INVITADO.id}-${Date.now()}@bodainvite`,
+    `DTSTAMP:${toICS(new Date())}`,
+    `DTSTART:${toICS(inicio)}`,
+    `DTEND:${toICS(fin)}`,
+    `SUMMARY:${titulo}`,
+    `LOCATION:${lugar}`,
+    `DESCRIPTION:${descripcion}`,
+    "STATUS:CONFIRMED",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\r\n");
+
+  // Crear blob y descargar
+  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href     = url;
+  a.download = `boda-${C.NOVIOS.nombre1.toLowerCase()}-${C.NOVIOS.nombre2.toLowerCase()}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  // Feedback visual
+  const btn = document.getElementById("btn-calendario");
+  if (btn) {
+    btn.classList.add("guardado");
+    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> GUARDADO`;
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  COPIAR AL PORTAPAPELES
+// ════════════════════════════════════════════════════════════
+function copiar(tipo) {
+  const map = {
+    "alias":     CONFIG.REGALOS.alias,
+    "cbu":       CONFIG.REGALOS.cbu,
+    "alias-usd": CONFIG.REGALOS.aliasUsd,
+    "cbu-usd":   CONFIG.REGALOS.cbuUsd,
+  };
+  const texto = map[tipo];
+  if (!texto) return;
+  navigator.clipboard.writeText(texto).then(() => {
+    const btn = document.getElementById(`btn-copy-${tipo}`);
+    if (!btn) return;
+    const orig = btn.innerHTML;
+    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+    btn.classList.add("copied");
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove("copied"); }, 2500);
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+//  FADE-IN AL SCROLL
+// ════════════════════════════════════════════════════════════
+function initFadeObserver() {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add("visible");
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll(".fade-up").forEach(el => observer.observe(el));
+}
+
+// ════════════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════════════
+function formatFechaLarga(isoStr) {
+  const fecha = new Date(isoStr);
+  return fecha.toLocaleDateString("es-AR", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric"
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+//  TRAMA ART DÉCO CON PARALLAX
+// ════════════════════════════════════════════════════════════
+function initArtDeco() {
+  // Crear el canvas SVG fijo al fondo
+  const wrap = document.createElement("div");
+  wrap.id = "art-deco-bg";
+  document.body.prepend(wrap);
+
+  wrap.innerHTML = `
+  <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <defs>
+      <!-- Líneas verticales finas: columnas art déco -->
+      <pattern id="v-lines" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+        <line x1="0" y1="0" x2="0" y2="40" stroke="rgba(201,169,110,0.07)" stroke-width="0.5"/>
+      </pattern>
+      <!-- Líneas horizontales muy sutiles -->
+      <pattern id="h-lines" x="0" y="0" width="40" height="80" patternUnits="userSpaceOnUse">
+        <line x1="0" y1="0" x2="40" y2="0" stroke="rgba(201,169,110,0.03)" stroke-width="0.5"/>
+      </pattern>
+      <!-- Diamantes en intersecciones cada 120px -->
+      <pattern id="diamonds" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
+        <rect x="57" y="57" width="6" height="6" fill="none"
+          stroke="rgba(201,169,110,0.12)" stroke-width="0.5"
+          transform="rotate(45,60,60)"/>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#v-lines)"/>
+    <rect width="100%" height="100%" fill="url(#h-lines)"/>
+    <rect id="deco-move" width="100%" height="100%" fill="url(#diamonds)"/>
+  </svg>`;
+
+  // Parallax al scroll: los diamantes se mueven más lento que el contenido
+  const decoMove = wrap.querySelector("#deco-move");
+  let ticking = false;
+  let offsetY  = 0;
+
+  window.addEventListener("scroll", () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        offsetY = window.scrollY * 0.3;  // 30% de la velocidad de scroll
+        decoMove.setAttribute("y", offsetY);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+}
+
+// ════════════════════════════════════════════════════════════
+//  GALERÍA CAROUSEL
+// ════════════════════════════════════════════════════════════
+// ── GALERÍA INFINITA (clonado de slides al estilo IG) ───────
+let galeriaIdx    = 0;  // índice real (0..total-1)
+let galeriaTotal  = 0;
+let galeriaStartX = 0;
+let galeriaIsDragging = false;
+let galeriaTransitioning = false;
+
+function initGaleria() {
+  const imgs   = CONFIG.IMAGENES.slideshow;
+  const track  = document.getElementById("galeria-track");
+  const dotsEl = document.getElementById("galeria-dots");
+  if (!track || !imgs || !imgs.length) return;
+
+  galeriaTotal = imgs.length;
+
+  // Técnica de carousel infinito:
+  // Insertar clon del último slide al principio y clon del primero al final
+  // Posición inicial = slide 1 (idx 1 en el DOM = idx 0 real)
+  const allImgs = [imgs[imgs.length - 1], ...imgs, imgs[0]];
+
+  allImgs.forEach(src => {
+    const slide = document.createElement("div");
+    slide.className = "galeria-slide";
+    slide.style.backgroundImage = `url('${src}')`;
+    track.appendChild(slide);
+  });
+
+  // Dots (solo los reales)
+  imgs.forEach((_, i) => {
+    const dot = document.createElement("div");
+    dot.className = "galeria-dot" + (i === 0 ? " active" : "");
+    dot.onclick = () => galeriaIrReal(i);
+    dotsEl.appendChild(dot);
+  });
+
+  // Empezar en posición 1 (primer slide real) SIN transición
+  track.style.transition = "none";
+  track.style.transform  = `translateX(-100%)`;
+
+  // Touch
+  const vp = track.parentElement;
+  vp.addEventListener("touchstart", e => { galeriaStartX = e.touches[0].clientX; }, { passive: true });
+  vp.addEventListener("touchend",   e => {
+    const dx = e.changedTouches[0].clientX - galeriaStartX;
+    if (Math.abs(dx) > 40) galeriaNav(dx < 0 ? 1 : -1);
+  }, { passive: true });
+
+  // Mouse drag
+  vp.addEventListener("mousedown",  e => { galeriaStartX = e.clientX; galeriaIsDragging = true; e.preventDefault(); });
+  vp.addEventListener("mouseup",    e => {
+    if (!galeriaIsDragging) return;
+    const dx = e.clientX - galeriaStartX;
+    if (Math.abs(dx) > 40) galeriaNav(dx < 0 ? 1 : -1);
+    galeriaIsDragging = false;
+  });
+  vp.addEventListener("mouseleave", () => { galeriaIsDragging = false; });
+
+  // Saltar silencioso cuando llega al clon
+  track.addEventListener("transitionend", () => {
+    galeriaTransitioning = false;
+    const domIdx = galeriaIdx + 1; // +1 por el clon inicial
+    // Si estamos en el clon del último (posición 0 en DOM)
+    if (domIdx === 0) {
+      track.style.transition = "none";
+      galeriaIdx = galeriaTotal - 1;
+      track.style.transform = `translateX(-${galeriaTotal * 100}%)`;
+    }
+    // Si estamos en el clon del primero (posición total+1 en DOM)
+    if (domIdx === galeriaTotal + 1) {
+      track.style.transition = "none";
+      galeriaIdx = 0;
+      track.style.transform = `translateX(-100%)`;
+    }
+  });
+}
+
+function galeriaNav(dir) {
+  if (galeriaTransitioning) return;
+  galeriaTransitioning = true;
+
+  galeriaIdx += dir;
+
+  const track = document.getElementById("galeria-track");
+  track.style.transition = "transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94)";
+  // domIdx = galeriaIdx + 1 (por el clon del inicio)
+  track.style.transform  = `translateX(-${(galeriaIdx + 1) * 100}%)`;
+
+  // Normalizar índice real para los dots (puede ser -1 o total)
+  const realIdx = ((galeriaIdx % galeriaTotal) + galeriaTotal) % galeriaTotal;
+  document.querySelectorAll(".galeria-dot").forEach((d, i) => {
+    d.classList.toggle("active", i === realIdx);
+  });
+}
+
+function galeriaIrReal(realIdx) {
+  galeriaIdx = realIdx;
+  const track = document.getElementById("galeria-track");
+  track.style.transition = "transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94)";
+  track.style.transform  = `translateX(-${(realIdx + 1) * 100}%)`;
+  document.querySelectorAll(".galeria-dot").forEach((d, i) => {
+    d.classList.toggle("active", i === realIdx);
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+//  REGALOS — lógica actualizada con 4 campos
+// ════════════════════════════════════════════════════════════
+function renderRegalos() {
+  const R = CONFIG.REGALOS;
+  if (!R) return;
+
+  const hasPesos   = R.alias || R.cbu;
+  const hasDolares = R.aliasUsd || R.cbuUsd;
+  if (!hasPesos && !hasDolares) return;
+
+  document.getElementById("section-regalos").classList.remove("hidden");
+
+  function show(id) { const el = document.getElementById(id); if (el) el.classList.remove("hidden"); }
+  function txt(id, val) { const el = document.getElementById(id); if (el && val) el.textContent = val; }
+
+  // Pesos
+  if (hasPesos) {
+    show("regalo-pesos-bloque");
+    txt("regalo-banco-pesos", R.banco || "");
+    if (R.alias) { txt("regalo-alias", R.alias); show("regalo-alias-wrap"); }
+    if (R.cbu)   { txt("regalo-cbu",   R.cbu);   show("regalo-cbu-wrap");   }
+  }
+
+  // Dólares
+  if (hasDolares) {
+    show("regalo-dolares-bloque");
+    txt("regalo-banco-dolares", R.bancoUsd || R.banco || "");
+    if (R.aliasUsd) { txt("regalo-alias-usd", R.aliasUsd); show("regalo-alias-usd-wrap"); }
+    if (R.cbuUsd)   { txt("regalo-cbu-usd",   R.cbuUsd);   show("regalo-cbu-usd-wrap");   }
+  }
+
+  if (R.nota) { txt("regalo-nota", R.nota); show("regalo-nota-wrap"); }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Check-in — Staff</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:      #0a0a0a;
+  --surface: #141414;
+  --border:  #2a2a2a;
+  --accent:  #c9a96e;
+  --text:    #f0ece4;
+  --muted:   #8a8680;
+  --green:   #5a9a5a;
+  --red:     #c06060;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans:  'Montserrat', sans-serif;
+}
+
+body {
+  background: var(--bg); color: var(--text);
+  font-family: var(--font-sans); font-weight: 300;
+  min-height: 100vh; padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── HEADER ─────────────────────────────────────────────── */
+.staff-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.staff-logo {
+  font-family: var(--font-serif); font-size: 20px; font-weight: 300;
+  font-style: italic; color: var(--accent);
+}
+.staff-tag {
+  font-size: 9px; letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--muted); background: var(--bg);
+  padding: 6px 12px; border: 0.5px solid var(--border);
+}
+
+/* ── MAIN ───────────────────────────────────────────────── */
+.staff-main {
+  max-width: 600px; margin: 0 auto; padding: 32px 20px 60px;
+}
+
+/* ── ESTADO ─────────────────────────────────────────────── */
+#estado-cargando, #estado-error, #estado-registrado {
+  text-align: center; padding: 60px 24px;
+}
+.spinner {
+  width: 36px; height: 36px;
+  border: 1px solid var(--border); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.estado-msg {
+  font-size: 14px; color: var(--muted); line-height: 1.8;
+}
+.estado-titulo {
+  font-family: var(--font-serif); font-size: 28px; font-weight: 300;
+  margin-bottom: 12px;
+}
+
+/* ── ID BADGE ───────────────────────────────────────────── */
+.id-badge {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 28px;
+}
+.id-code {
+  font-family: var(--font-sans); font-size: 28px; font-weight: 500;
+  color: var(--accent); letter-spacing: 0.1em;
+}
+.id-label {
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--muted);
+}
+.ya-ingreso-badge {
+  display: inline-block; padding: 4px 12px;
+  background: rgba(90,154,90,0.15); border: 1px solid rgba(90,154,90,0.4);
+  color: var(--green); font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; margin-left: auto;
+}
+
+/* ── INVITADO CARD ──────────────────────────────────────── */
+.invitado-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+  position: relative; overflow: hidden;
+}
+.invitado-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.3;
+}
+.invitado-card.es-principal::before { opacity: 0.7; }
+
+.card-header {
+  padding: 20px 20px 0;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+}
+.card-jerarquia {
+  font-size: 9px; letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 6px; opacity: 0.8;
+}
+.card-nombre {
+  font-family: var(--font-serif); font-size: 26px; font-weight: 300;
+  color: var(--text); line-height: 1;
+}
+.card-id {
+  font-size: 10px; letter-spacing: 0.15em; color: var(--muted);
+  margin-top: 4px;
+}
+
+.card-body {
+  padding: 16px 20px 20px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px;
+}
+.field-label {
+  font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 4px;
+}
+.field-value {
+  font-size: 14px; color: var(--text); line-height: 1.4;
+}
+.field-value.sin-dato { color: var(--muted); font-style: italic; }
+.alergia-si { color: #e08080; }
+.mesa-accent { color: var(--accent); }
+
+/* ── BOTÓN REGISTRAR ────────────────────────────────────── */
+.btn-registrar {
+  width: 100%; margin-top: 28px; padding: 22px;
+  background: var(--accent); border: none; color: #0a0a0a;
+  font-family: var(--font-sans); font-size: 12px; font-weight: 500;
+  letter-spacing: 0.35em; text-transform: uppercase;
+  cursor: pointer; transition: background 0.3s;
+}
+.btn-registrar:hover   { background: #e8d5b0; }
+.btn-registrar:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-registrar.ya-reg {
+  background: transparent; border: 1px solid var(--green); color: var(--green);
+}
+
+.aviso-ya-ingreso {
+  margin-top: 16px; padding: 16px 20px;
+  border: 1px solid rgba(90,154,90,0.3);
+  background: rgba(90,154,90,0.05);
+  font-size: 13px; color: var(--green); line-height: 1.7; text-align: center;
+}
+
+/* ── DIVIDER ─────────────────────────────────────────────── */
+.staff-divider {
+  width: 1px; height: 40px; background: var(--accent);
+  margin: 8px auto; opacity: 0.25;
+}
+</style>
+</head>
+<body>
+
+<header class="staff-header">
+  <span class="staff-logo">Check-in</span>
+  <span class="staff-tag">Staff</span>
+</header>
+
+<main class="staff-main">
+
+  <!-- Estado: cargando -->
+  <div id="estado-cargando">
+    <div class="spinner"></div>
+    <p class="estado-msg">Buscando invitado...</p>
+  </div>
+
+  <!-- Estado: error -->
+  <div id="estado-error" class="hidden">
+    <p class="estado-titulo" style="color:var(--red)">Sin resultados</p>
+    <p class="estado-msg" id="error-msg">No se encontró información para este código.</p>
+  </div>
+
+  <!-- Estado: datos del invitado -->
+  <div id="estado-datos" class="hidden">
+    <div class="id-badge">
+      <div>
+        <p class="id-label">Código</p>
+        <p class="id-code" id="datos-id">—</p>
+      </div>
+      <span class="ya-ingreso-badge hidden" id="badge-ya-ingreso">Ya ingresó</span>
+    </div>
+
+    <div id="lista-invitados"></div>
+
+    <div id="bloque-registrar">
+      <button class="btn-registrar" id="btn-registrar" onclick="registrarIngreso()">
+        REGISTRAR INGRESO
+      </button>
+    </div>
+
+    <div class="aviso-ya-ingreso hidden" id="aviso-ya-ingreso">
+      ✓ Ingreso registrado correctamente.
+    </div>
+  </div>
+
+  <!-- Estado: registrado con éxito -->
+  <div id="estado-registrado" class="hidden">
+    <p class="estado-titulo" style="color:var(--green)">✓ Ingreso registrado</p>
+    <p class="estado-msg">El registro se guardó correctamente en el sistema.</p>
+  </div>
+
+</main>
+
+<script src="config.js"></script>
+<script>
+const SCRIPT_URL = CONFIG.SCRIPT_URL;
+const params     = new URLSearchParams(window.location.search);
+const ID_BASE    = (params.get("id") || "").toUpperCase().trim();
+
+// ── Utilidades ───────────────────────────────────────────
+function show(id)  { const el = document.getElementById(id); if (el) el.classList.remove("hidden"); }
+function hide(id)  { const el = document.getElementById(id); if (el) el.classList.add("hidden"); }
+function txt(id,v) { const el = document.getElementById(id); if (el) el.textContent = v; }
+
+function jsonp(url, params, onOk, onErr) {
+  const cb = "__cb_" + Date.now();
+  params.callback = cb;
+  const parts = Object.entries(params).map(([k,v]) =>
+    encodeURIComponent(k) + "=" + encodeURIComponent(String(v))
+  );
+  const script = document.createElement("script");
+  script.src   = url + "?" + parts.join("&");
+
+  const timeout = setTimeout(() => {
+    cleanup(); if (onErr) onErr("timeout");
+  }, 15000);
+
+  function cleanup() {
+    clearTimeout(timeout); delete window[cb];
+    if (script.parentNode) script.parentNode.removeChild(script);
+  }
+
+  window[cb] = data => { cleanup(); if (onOk) onOk(data); };
+  script.onerror = () => { cleanup(); if (onErr) onErr("error"); };
+  document.head.appendChild(script);
+}
+
+// ── Cargar datos del invitado desde RESPUESTAS ───────────
+let INVITADOS_DATA = [];
+let YA_INGRESO     = false;
+
+function cargarDatos() {
+  if (!ID_BASE) {
+    hide("estado-cargando");
+    txt("error-msg", "No se especificó un código de invitado.");
+    show("estado-error");
+    return;
+  }
+
+  jsonp(SCRIPT_URL, { action: "getIngreso", id: ID_BASE }, data => {
+    hide("estado-cargando");
+
+    if (!data.success || !data.invitados || !data.invitados.length) {
+      txt("error-msg", `No se encontraron datos para el código ${ID_BASE}. ¿Confirmó asistencia?`);
+      show("estado-error");
+      return;
+    }
+
+    INVITADOS_DATA = data.invitados;
+    YA_INGRESO     = data.yaIngreso;
+
+    txt("datos-id", ID_BASE);
+    if (YA_INGRESO) {
+      show("badge-ya-ingreso");
+      show("aviso-ya-ingreso");
+      const btn = document.getElementById("btn-registrar");
+      if (btn) { btn.textContent = "YA REGISTRADO"; btn.disabled = true; btn.classList.add("ya-reg"); }
+    }
+
+    renderInvitados();
+    show("estado-datos");
+
+  }, err => {
+    hide("estado-cargando");
+    txt("error-msg", "Error de conexión. Intentá de nuevo.");
+    show("estado-error");
+  });
+}
+
+// ── Renderizar cards de invitados ────────────────────────
+function renderInvitados() {
+  const lista = document.getElementById("lista-invitados");
+  lista.innerHTML = "";
+
+  INVITADOS_DATA.forEach((inv, idx) => {
+    const esPrincipal = inv.jerarquia === "Principal";
+    const nombre = [inv.nombre, inv.apellido].filter(Boolean).join(" ") || "—";
+    const confirmo = (inv.confirmado || "").toUpperCase() === "SI";
+
+    // Alergia
+    const tieneAlergia = (inv.alergia || "").toUpperCase() === "SI";
+    const tipoAlergia  = inv.tipoAlergia && inv.tipoAlergia !== "-" ? inv.tipoAlergia : null;
+
+    // Mesa
+    const mesaNum  = inv.mesaNum  && inv.mesaNum  !== "" ? inv.mesaNum  : null;
+    const mesaNom  = inv.mesaNom  && inv.mesaNom  !== "" ? inv.mesaNom  : null;
+
+    const card = document.createElement("div");
+    card.className = "invitado-card" + (esPrincipal ? " es-principal" : "");
+    card.innerHTML = `
+      <div class="card-header">
+        <div>
+          <p class="card-jerarquia">${esPrincipal ? "Invitado principal" : "Acompañante " + idx}</p>
+          <p class="card-nombre">${nombre}</p>
+          <p class="card-id">${inv.id || ""}</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-field">
+          <p class="field-label">Comida</p>
+          <p class="field-value ${!inv.comida || inv.comida === "-" ? "sin-dato" : ""}">${inv.comida && inv.comida !== "-" ? inv.comida : "No especificó"}</p>
+        </div>
+        <div class="card-field">
+          <p class="field-label">Alergia</p>
+          <p class="field-value ${tieneAlergia ? "alergia-si" : ""}">${tieneAlergia ? "SÍ" : "NO"}</p>
+        </div>
+        ${tieneAlergia && tipoAlergia ? `
+        <div class="card-field" style="grid-column:1/-1">
+          <p class="field-label">Tipo de alergia</p>
+          <p class="field-value alergia-si">${tipoAlergia}</p>
+        </div>` : ""}
+        <div class="card-field">
+          <p class="field-label">Mesa</p>
+          <p class="field-value ${!mesaNum ? "sin-dato" : "mesa-accent"}">${mesaNum || "Sin asignar"}</p>
+        </div>
+        <div class="card-field">
+          <p class="field-label">Nombre de mesa</p>
+          <p class="field-value ${!mesaNom ? "sin-dato" : "mesa-accent"}">${mesaNom || "—"}</p>
+        </div>
+      </div>
+    `;
+    lista.appendChild(card);
+
+    if (idx < INVITADOS_DATA.length - 1) {
+      const div = document.createElement("div");
+      div.className = "staff-divider";
+      lista.appendChild(div);
+    }
+  });
+}
+
+// ── Registrar ingreso ────────────────────────────────────
+function registrarIngreso() {
+  const btn = document.getElementById("btn-registrar");
+  if (btn) btn.disabled = true;
+
+  jsonp(SCRIPT_URL, { action: "checkin", id: ID_BASE }, data => {
+    if (data.success) {
+      show("aviso-ya-ingreso");
+      show("badge-ya-ingreso");
+      if (btn) { btn.textContent = "✓ INGRESO REGISTRADO"; btn.classList.add("ya-reg"); }
+    } else {
+      if (btn) btn.disabled = false;
+      alert("Error al registrar. Intentá de nuevo.");
+    }
+  }, () => {
+    if (btn) btn.disabled = false;
+    alert("Error de conexión.");
+  });
+}
+
+// ── Iniciar ──────────────────────────────────────────────
+cargarDatos();
+</script>
+</body>
+</html>
